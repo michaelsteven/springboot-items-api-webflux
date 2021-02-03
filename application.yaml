@@ -1,0 +1,40 @@
+server:
+  shutdown: graceful
+api:
+  path: /api/v1/items
+management:
+  server:
+    port: 9001
+  endpoint:
+    health:
+      enabled: true
+      show-details: "ALWAYS"
+  endpoints:
+    web: 
+      exposure:
+        include: "health"
+spring:
+  profiles: default
+  application:
+    name: springboot-items-api
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        one-indexed-parameters: false
+        max-page-size: 2000
+  r2dbc:
+    url: r2dbcs:pool:mysql://192.168.1.177:3306/archetype
+    username: ${mysql_username}
+    password: ${mysql_password}
+    pool:
+      initial-size: 100
+      max-size: 500
+      max-idle-time: 30m
+      validation-query: SELECT 1
+logging:
+  level:
+    root: INFO
+    org.springframework.security: INFO
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+    com.github.michaelsteven.archetype.springboot.webflux,items: TRACE
