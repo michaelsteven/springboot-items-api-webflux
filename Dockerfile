@@ -1,5 +1,5 @@
 FROM registry.connect.redhat.com/ibm/ibmjava8-jre-ubi8-minimal
-COPY target/springboot-items-api-0.0.1-SNAPSHOT.jar /app.jar
+COPY target/springboot-items-api-webflux-0.0.1-SNAPSHOT.jar /app.jar
 
 USER 1001
 EXPOSE 8080
