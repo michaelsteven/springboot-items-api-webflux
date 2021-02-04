@@ -37,4 +37,4 @@ logging:
     root: INFO
     org.springframework.security: INFO
     org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
-    com.github.michaelsteven.archetype.springboot.webflux,items: TRACE
+    com.github.michaelsteven.archetype.springboot.webflux.items: TRACE

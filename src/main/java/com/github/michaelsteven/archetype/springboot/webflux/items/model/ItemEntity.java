@@ -33,6 +33,6 @@ public class ItemEntity {
 	
 	/** The created timestamp. */
 	@CreatedDate
-	@Column("createdTs")
+	@Column("created_ts")
 	private Instant createdTimestamp;
 }

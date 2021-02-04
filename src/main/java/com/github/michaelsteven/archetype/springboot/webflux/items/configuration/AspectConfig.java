@@ -12,7 +12,7 @@ import com.github.michaelsteven.archetype.springboot.webflux.items.aspect.Logger
 /**
  * The Class AspectConfig.
  */
-//@Configuration
+@Configuration
 @EnableAspectJAutoProxy
 public class AspectConfig {
 

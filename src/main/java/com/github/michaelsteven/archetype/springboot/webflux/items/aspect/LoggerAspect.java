@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.netty.handler.codec.http.HttpContentEncoder.Result;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -64,16 +65,16 @@ public class LoggerAspect {
 	 * @throws Throwable
 	 */
 	@Around("applicationPointCut()")
-	public Mono<Result> logAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
+	public Object logAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
 		Logger logger = this.getLogger(joinPoint);
 		
 		logger.trace("Entered: {} () with arguments = {}" , joinPoint.getSignature().getName(), Arrays.deepToString(joinPoint.getArgs()));
 	    try {
-	    	Mono<Result> mono = (Mono<Result>) joinPoint.proceed();
+	    	Object object = joinPoint.proceed();
 	    	logger.trace("Exited: {} () with result = {}", 
-	    			joinPoint.getSignature().getName(), objectMapper.writeValueAsString(mono)
+	    			joinPoint.getSignature().getName(), objectMapper.writeValueAsString(object)
 	    		);
-	    	return mono;
+	    	return object;
 	    } catch( Exception e) {
 	    	logger.error("Exception {} in {}()", Arrays.toString(joinPoint.getArgs()),
 	    			joinPoint.getSignature().getName()

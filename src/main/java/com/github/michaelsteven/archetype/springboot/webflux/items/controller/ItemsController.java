@@ -76,11 +76,8 @@ public class ItemsController {
             @ApiResponse(responseCode = "503", description = "Service unavailable", content = @Content(schema = @Schema(implementation = ApiError.class))) })
     @SecurityRequirement(name = "jwt", scopes = {})
     @GetMapping(value = API_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Flux<ItemDto> getItems(){
-        
-    //public Flux<ItemDto> getItems(@RequestParam(required=false,defaultValue="0") int page, @RequestParam(required=false,defaultValue="10") int size, @RequestParam(required=false) String[] sort){
-    	//Pageable pageable = PageRequest.of(page, size , Sort.by(sort));
-    	return itemsService.getItems(null);
+    public Flux<ItemDto> getItems(@RequestParam(required=false,defaultValue="0") int page, @RequestParam(required=false,defaultValue="10") int size, @RequestParam(required=false, defaultValue="id") String[] sort){
+    	return itemsService.getItems(PageRequest.of(page, size, Sort.by(sort)));
 	}
     
     
@@ -165,8 +162,6 @@ public class ItemsController {
             @ApiResponse(responseCode = "503", description = "Service unavailable", content = @Content(schema = @Schema(implementation = ApiError.class))) })
     @DeleteMapping(API_PATH + "/{id}")
     public void deleteById(@PathVariable long id) {
-    	//HttpServletResponse response) {
     	itemsService.deleteItemById(id);
-    	//response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 }

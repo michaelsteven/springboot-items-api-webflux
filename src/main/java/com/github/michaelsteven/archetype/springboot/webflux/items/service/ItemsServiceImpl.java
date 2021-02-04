@@ -63,7 +63,8 @@ public class ItemsServiceImpl implements ItemsService {
 	@Override
 	@Compliance(action = ComplianceAction.read)
 	public Flux<ItemDto> getItems(Pageable pageable){
-		return itemRepository.findAll().map(item -> itemDtoMapper.mapToDto(item));
+		//return itemRepository.findAll().map(item -> itemDtoMapper.mapToDto(item));
+		return itemRepository.findByIdNotNull(pageable).map(item -> itemDtoMapper.mapToDto(item));
 	}
 	
 	
