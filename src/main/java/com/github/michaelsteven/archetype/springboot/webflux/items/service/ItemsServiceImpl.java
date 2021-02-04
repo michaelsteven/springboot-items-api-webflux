@@ -20,8 +20,6 @@ import com.github.michaelsteven.archetype.springboot.webflux.items.model.Confirm
 import com.github.michaelsteven.archetype.springboot.webflux.items.model.ItemDto;
 import com.github.michaelsteven.archetype.springboot.webflux.items.model.ItemEntity;
 import com.github.michaelsteven.archetype.springboot.webflux.items.model.ItemStatus;
-import com.github.michaelsteven.archetype.springboot.webflux.items.model.event.Compliance;
-import com.github.michaelsteven.archetype.springboot.webflux.items.model.event.ComplianceAction;
 import com.github.michaelsteven.archetype.springboot.webflux.items.repository.ItemRepository;
 
 import reactor.core.publisher.Flux;
@@ -61,7 +59,6 @@ public class ItemsServiceImpl implements ItemsService {
 	 * @return the items
 	 */
 	@Override
-	@Compliance(action = ComplianceAction.read)
 	public Flux<ItemDto> getItems(Pageable pageable){
 		return itemRepository.findByIdNotNull(pageable).map(item -> itemDtoMapper.mapToDto(item));
 	}
@@ -74,7 +71,6 @@ public class ItemsServiceImpl implements ItemsService {
 	 * @return the item by id
 	 */
 	@Override
-	@Compliance(action = ComplianceAction.read)
 	public Mono<ItemDto> getItemById(long id){
 		 return itemRepository.findById(id)
 					.switchIfEmpty(
@@ -100,7 +96,6 @@ public class ItemsServiceImpl implements ItemsService {
 	 * @return the confirmation dto
 	 */
 	@Override
-	@Compliance(action = ComplianceAction.create)
 	public Mono<ConfirmationDto> saveItem(@NotNull @Valid ItemDto itemDto) {
 		return itemRepository.save(itemDtoMapper.mapToEntity(itemDto)).map(item -> createConfirmationDto(ItemStatus.SUBMITTED, item));
 	}
@@ -113,7 +108,6 @@ public class ItemsServiceImpl implements ItemsService {
 	 * @return the confirmation dto
 	 */
 	@Override
-	@Compliance(action = ComplianceAction.update)
 	public Mono<ConfirmationDto> editItem(@NotNull @Valid ItemDto itemDto) {
 		return itemRepository.findById(itemDto.getId())
 				.switchIfEmpty(
@@ -139,7 +133,6 @@ public class ItemsServiceImpl implements ItemsService {
 	 * @param id the id
 	 */
 	@Override
-	@Compliance(action = ComplianceAction.delete)
 	public void deleteItemById(long id){
 		itemRepository.findById(id).flatMap(this.itemRepository::delete);
 	}

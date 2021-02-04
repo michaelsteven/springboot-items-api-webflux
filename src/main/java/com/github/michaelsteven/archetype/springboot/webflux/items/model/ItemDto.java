@@ -1,7 +1,6 @@
 package com.github.michaelsteven.archetype.springboot.webflux.items.model;
 
 import java.time.Instant;
-import java.time.ZonedDateTime;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
