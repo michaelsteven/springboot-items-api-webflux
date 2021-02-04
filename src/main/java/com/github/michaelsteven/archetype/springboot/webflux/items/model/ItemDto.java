@@ -1,5 +1,6 @@
 package com.github.michaelsteven.archetype.springboot.webflux.items.model;
 
+import java.time.Instant;
 import java.time.ZonedDateTime;
 
 import javax.validation.constraints.NotNull;
@@ -44,6 +45,6 @@ public class ItemDto {
 	
 	/** The date submitted. */
 	@Schema(hidden = true)
-	private ZonedDateTime dateSubmitted;
+	private Instant dateSubmitted;
 	
 }
