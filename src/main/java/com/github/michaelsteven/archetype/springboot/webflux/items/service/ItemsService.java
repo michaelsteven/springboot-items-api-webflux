@@ -1,11 +1,8 @@
 package com.github.michaelsteven.archetype.springboot.webflux.items.service;
 
-import java.util.Optional;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.github.michaelsteven.archetype.springboot.webflux.items.model.ConfirmationDto;

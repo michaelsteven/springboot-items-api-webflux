@@ -3,6 +3,7 @@ package com.github.michaelsteven.archetype.springboot.webflux.items.configuratio
 import java.util.List;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import com.github.michaelsteven.archetype.springboot.webflux.items.model.ItemDto;
@@ -19,7 +20,7 @@ public interface ItemDtoMapper {
     //@Mapping(source = "dto.id", target = "id")
     ItemEntity mapToEntity(ItemDto dto);
 
-    //@Mapping(source = "entity.id", target = "id")
+    @Mapping(source = "createdTimestamp", target = "dateSubmitted")
     ItemDto mapToDto(ItemEntity entity);
 
     List<ItemEntity> mapListToEntity(List<ItemDto> dtoList);

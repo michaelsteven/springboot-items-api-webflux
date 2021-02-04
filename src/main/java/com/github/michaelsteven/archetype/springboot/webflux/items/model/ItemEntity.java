@@ -1,10 +1,6 @@
 package com.github.michaelsteven.archetype.springboot.webflux.items.model;
 
-import java.time.Instant;
-
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import lombok.Data;
@@ -17,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 //@Entity
 @Table("items")
-public class ItemEntity {
+public class ItemEntity extends Auditable {
 
 	/** The id. */
 	@Id
@@ -30,9 +26,4 @@ public class ItemEntity {
 	
 	/** The description. */
 	private String description;
-	
-	/** The created timestamp. */
-	@CreatedDate
-	@Column("created_ts")
-	private Instant createdTimestamp;
 }

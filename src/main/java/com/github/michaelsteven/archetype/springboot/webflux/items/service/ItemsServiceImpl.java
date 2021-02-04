@@ -76,7 +76,20 @@ public class ItemsServiceImpl implements ItemsService {
 	@Override
 	@Compliance(action = ComplianceAction.read)
 	public Mono<ItemDto> getItemById(long id){
-		 return itemRepository.findById(id).map(itemDtoMapper::mapToDto);
+		 return itemRepository.findById(id)
+					.switchIfEmpty(
+							Mono.error(  
+								new ValidationException(
+									messageSource.getMessage( 
+											   "itemsservice.validationexception.entitynotfoundforid", 
+												new Object[] { String.valueOf(id) },
+												LocaleContextHolder.getLocale()
+											)
+									)
+							)
+						) 
+
+				 .map(itemDtoMapper::mapToDto);
 	}
 	
 	

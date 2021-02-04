@@ -8,7 +8,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.michaelsteven.archetype.springboot.webflux.items.model.ApiError;
 import com.github.michaelsteven.archetype.springboot.webflux.items.model.ConfirmationDto;
 import com.github.michaelsteven.archetype.springboot.webflux.items.model.ItemDto;
-import com.github.michaelsteven.archetype.springboot.webflux.items.model.ItemEntity;
 import com.github.michaelsteven.archetype.springboot.webflux.items.service.ItemsService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -98,7 +96,7 @@ public class ItemsController {
             @ApiResponse(responseCode = "503", description = "Service unavailable", content = @Content(schema = @Schema(implementation = ApiError.class))) })
     @PostMapping(API_PATH)
     public Mono<ConfirmationDto> saveItem(@Valid @RequestBody @Parameter(description = "A new item", required = true) ItemDto itemDto){
-    	return itemsService.saveItem(itemDto);
+    	return Mono.just(itemDto).flatMap(itemsService::saveItem);
     }
     
     

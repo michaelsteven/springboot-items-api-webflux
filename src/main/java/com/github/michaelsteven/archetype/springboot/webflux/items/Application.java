@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 @OpenAPIDefinition(info = @Info(title = "Spring Boot Items API webflux", version = "0.0.1", contact = @Contact(name = "Mike Hepfer", email = "michaelsteven@hepfer.org")))
 @SpringBootApplication
 @EnableR2dbcRepositories
-//@EnableR2dbcAuditing
+@EnableR2dbcAuditing
 public class Application {
 
 	/**
