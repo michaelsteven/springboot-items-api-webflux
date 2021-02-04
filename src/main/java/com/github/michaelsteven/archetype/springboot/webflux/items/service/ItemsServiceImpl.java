@@ -63,7 +63,6 @@ public class ItemsServiceImpl implements ItemsService {
 	@Override
 	@Compliance(action = ComplianceAction.read)
 	public Flux<ItemDto> getItems(Pageable pageable){
-		//return itemRepository.findAll().map(item -> itemDtoMapper.mapToDto(item));
 		return itemRepository.findByIdNotNull(pageable).map(item -> itemDtoMapper.mapToDto(item));
 	}
 	
@@ -103,15 +102,21 @@ public class ItemsServiceImpl implements ItemsService {
 	@Override
 	@Compliance(action = ComplianceAction.update)
 	public Mono<ConfirmationDto> editItem(@NotNull @Valid ItemDto itemDto) {
-		Mono<ItemEntity> fallback =  Mono.error(  
+		return itemRepository.findById(itemDto.getId())
+				.switchIfEmpty(
+					Mono.error(  
 						new ValidationException(
-								messageSource.getMessage("itemsservice.validationexception.entitynotfoundforid", 
+							messageSource.getMessage( 
+									   "itemsservice.validationexception.entitynotfoundforid", 
 										new Object[] { String.valueOf(itemDto.getId()) },
 										LocaleContextHolder.getLocale()
-										)
-								)
-				);
-		return itemRepository.findById(itemDto.getId()).switchIfEmpty(fallback).map(item -> createConfirmationDto(ItemStatus.SUBMITTED, item));
+									)
+							)
+					)
+				)
+				.map(entity -> convert(itemDto, entity))
+				.flatMap(itemRepository::save)
+				.map(item -> createConfirmationDto(ItemStatus.SUBMITTED, item));
 	}
 	
 	
@@ -148,5 +153,20 @@ public class ItemsServiceImpl implements ItemsService {
 			logger.warn("itemEntity is null");
 		}
 		return confirmationDto;
+	}
+	
+	/**
+	 * Convert.
+	 *
+	 * @param sourceDto the source dto
+	 * @param targetEntity the target entity
+	 */
+	private ItemEntity convert(@NotNull ItemDto sourceDto, ItemEntity targetEntity) {
+		if(null != targetEntity) {
+			targetEntity.setId(sourceDto.getId());
+			targetEntity.setName(sourceDto.getName());
+			targetEntity.setDescription(sourceDto.getDescription());
+		}
+		return targetEntity;
 	}
 }

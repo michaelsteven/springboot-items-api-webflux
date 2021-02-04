@@ -1,6 +1,4 @@
 package com.github.michaelsteven.archetype.springboot.webflux.items.configuration;
-
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -17,7 +15,6 @@ import com.github.michaelsteven.archetype.springboot.webflux.items.aspect.Logger
 public class AspectConfig {
 
 	private ObjectMapper objectMapper;
-	private MessageSource messageSource;
 	
 	/**
 	 * Constructor.
@@ -25,9 +22,8 @@ public class AspectConfig {
 	 * @param objectMapper the object mapper
 	 * @param messageSource the message source
 	 */
-	public AspectConfig(ObjectMapper objectMapper, MessageSource messageSource) {
+	public AspectConfig(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
-		this.messageSource = messageSource;
 	}
 	
 	/**

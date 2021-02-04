@@ -37,11 +37,12 @@ public class MessageLocalizationConfig {
 	 *
 	 * @return the locale resolver
 	 */
-//	@Bean
-//	public LocaleResolver localeResolver() {
-//		AcceptHeaderLocaleResolver acceptHeaderLocaleResolver = new AcceptHeaderLocaleResolver();
-//		acceptHeaderLocaleResolver.setDefaultLocale(DEFAULT_LOCALE);
-//		return acceptHeaderLocaleResolver;
-//	}
+	@Bean
+	public LocaleResolver localeResolver() {
+		return new LocaleResolver();
+		//AcceptHeaderLocaleResolver acceptHeaderLocaleResolver = new AcceptHeaderLocaleResolver();
+		//acceptHeaderLocaleResolver.setDefaultLocale(DEFAULT_LOCALE);
+		//return acceptHeaderLocaleResolver;
+	}
 	
 }

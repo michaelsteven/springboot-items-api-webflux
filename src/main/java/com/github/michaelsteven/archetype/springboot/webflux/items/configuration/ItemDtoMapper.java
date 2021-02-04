@@ -3,7 +3,6 @@ package com.github.michaelsteven.archetype.springboot.webflux.items.configuratio
 import java.util.List;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import com.github.michaelsteven.archetype.springboot.webflux.items.model.ItemDto;

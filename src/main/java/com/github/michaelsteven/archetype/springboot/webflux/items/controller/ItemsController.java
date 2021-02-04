@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.michaelsteven.archetype.springboot.webflux.items.model.ApiError;
 import com.github.michaelsteven.archetype.springboot.webflux.items.model.ConfirmationDto;
 import com.github.michaelsteven.archetype.springboot.webflux.items.model.ItemDto;
+import com.github.michaelsteven.archetype.springboot.webflux.items.model.ItemEntity;
 import com.github.michaelsteven.archetype.springboot.webflux.items.service.ItemsService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -138,15 +139,19 @@ public class ItemsController {
     @SecurityRequirement(name = "jwt", scopes = {})
     @PutMapping(API_PATH + "/{id}")
     public Mono<ConfirmationDto> editItem(@PathVariable long id, @Valid @RequestBody @Parameter(description = "A modified item", required = true) ItemDto itemDto){
-    	if(id != itemDto.getId()) {
-    		String message = messageSource.getMessage("itemscontroller.validationexception.pathiddoesntmatchobject", 
-    				new Object[] { String.valueOf(id), String.valueOf(itemDto.getId())},
-    				LocaleContextHolder.getLocale());
-    		throw new ValidationException(message);
-    	}
-    	
-    	return itemsService.editItem(itemDto);
+		return Mono.just(itemDto).filter(dto -> id == dto.getId())
+				.switchIfEmpty(
+					Mono.error(  
+						new ValidationException(
+							messageSource.getMessage("itemscontroller.validationexception.pathiddoesnotmatchobject", 
+								new Object[] { String.valueOf(id), String.valueOf(itemDto.getId()) }, LocaleContextHolder.getLocale()
+							)
+						)
+					)
+				)
+				.flatMap(itemsService::editItem);
     }
+    
     
    
     /**
