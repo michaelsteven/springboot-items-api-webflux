@@ -60,7 +60,8 @@ public class ItemsServiceImpl implements ItemsService {
 	 */
 	@Override
 	public Flux<ItemDto> getItems(Pageable pageable){
-		return itemRepository.findByIdNotNull(pageable).map(item -> itemDtoMapper.mapToDto(item));
+		return itemRepository.findByIdNotNull(pageable)
+							 .map(item -> itemDtoMapper.mapToDto(item));
 	}
 	
 	
@@ -72,20 +73,19 @@ public class ItemsServiceImpl implements ItemsService {
 	 */
 	@Override
 	public Mono<ItemDto> getItemById(long id){
-		 return itemRepository.findById(id)
-					.switchIfEmpty(
-							Mono.error(  
-								new ValidationException(
-									messageSource.getMessage( 
-											   "itemsservice.validationexception.entitynotfoundforid", 
-												new Object[] { String.valueOf(id) },
-												LocaleContextHolder.getLocale()
+		return itemRepository.findById(id)
+						     .switchIfEmpty(
+									Mono.error(  
+										new ValidationException(
+											messageSource.getMessage( 
+												   "itemsservice.validationexception.entitynotfoundforid", 
+													new Object[] { String.valueOf(id) },
+													LocaleContextHolder.getLocale()
 											)
+										)
 									)
-							)
-						) 
-
-				 .map(itemDtoMapper::mapToDto);
+								) 
+						      .map(itemDtoMapper::mapToDto);
 	}
 	
 	
@@ -97,7 +97,8 @@ public class ItemsServiceImpl implements ItemsService {
 	 */
 	@Override
 	public Mono<ConfirmationDto> saveItem(@NotNull @Valid ItemDto itemDto) {
-		return itemRepository.save(itemDtoMapper.mapToEntity(itemDto)).map(item -> createConfirmationDto(ItemStatus.SUBMITTED, item));
+		return itemRepository.save(itemDtoMapper.mapToEntity(itemDto))
+							 .map(item -> createConfirmationDto(ItemStatus.SUBMITTED, item));
 	}
 	
 	
@@ -110,20 +111,20 @@ public class ItemsServiceImpl implements ItemsService {
 	@Override
 	public Mono<ConfirmationDto> editItem(@NotNull @Valid ItemDto itemDto) {
 		return itemRepository.findById(itemDto.getId())
-				.switchIfEmpty(
-					Mono.error(  
-						new ValidationException(
-							messageSource.getMessage( 
-									   "itemsservice.validationexception.entitynotfoundforid", 
-										new Object[] { String.valueOf(itemDto.getId()) },
-										LocaleContextHolder.getLocale()
-									)
-							)
+			.switchIfEmpty(
+				Mono.error(  
+					new ValidationException(
+						messageSource.getMessage( 
+						   "itemsservice.validationexception.entitynotfoundforid", 
+							new Object[] { String.valueOf(itemDto.getId()) },
+							LocaleContextHolder.getLocale()
+						)
 					)
 				)
-				.map(entity -> convert(itemDto, entity))
-				.flatMap(itemRepository::save)
-				.map(item -> createConfirmationDto(ItemStatus.SUBMITTED, item));
+			)
+			.map(entity -> convert(itemDto, entity))
+			.flatMap(itemRepository::save)
+			.map(item -> createConfirmationDto(ItemStatus.SUBMITTED, item));
 	}
 	
 	
