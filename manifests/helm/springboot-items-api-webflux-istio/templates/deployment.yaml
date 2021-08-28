@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "name" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ template "releasetag" . }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "name" . }}
+      release: {{ .Release.Name }}
+  replicas: {{ .Values.replicaCount }}
+  # The number of old deployments you want to keep around
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+        version: {{ .Values.subset.version }}
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ template "name" . }}
+              topologyKey: kubernetes.io/hostname
+      securityContext:
+        runAsUser: {{ .Values.image.runAsUser }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          resources:
+            limits:
+              #cpu: "2"
+              cpu: "0.5"
+              memory: 385Mi
+            requests:
+              cpu: "0.5"
+              memory: 308Mi
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: spring_config_location
+              value: /config/application.yaml
+            - name: spring_profiles_active
+              value: kubernetes
+            - name: mysql_username
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: mysql-credentials
+            - name: mysql_password
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: mysql-credentials
+          ports:
+            - name: http-app
+              containerPort: {{ .Values.service.appPort }}
+              protocol: TCP
+            - name: http-liveness
+              containerPort: {{ .Values.service.livenessPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: "/actuator/health"
+              port: http-liveness
+              scheme: HTTP
+            initialDelaySeconds: 90
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: http-liveness
+              scheme: HTTP
+            initialDelaySeconds: 55
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          volumeMounts:
+            - mountPath: /config
+              name: application-config
+              readOnly: true
+      volumes:
+        - name: application-config
+          configMap:
+            name: {{ template "name" . }}
+            defaultMode: 438
+            items:
+              - key: application.yaml
+                path: application.yaml

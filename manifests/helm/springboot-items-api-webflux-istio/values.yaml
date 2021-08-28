@@ -1,0 +1,23 @@
+replicaCount: 2
+revisionHistoryLimit: 3
+subset:
+  version: v1
+image:
+  repository: michaelsteven
+  name: springboot-items-api-webflux
+  tag: 0.0.1
+  pullSecret: regsecret
+  pullPolicy: Always
+  runAsUser: 1001
+service:
+  name: springboot-items-api-webflux
+  type: ClusterIP
+  appPort: 8080
+  livenessPort: 9001
+resources: {}
+apiRoot: '/api/v1/items'
+ingress:
+  gateway: ibmgarageforcloud-com
+  appName: springboot-items-api-webflux
+  tlsSecretName: wildcard-ibmgarageforcloud-com
+  itemsPath: springboot-items-api-webflux.ibmgarageforcloud.com
